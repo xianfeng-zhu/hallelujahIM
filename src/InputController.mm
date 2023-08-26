@@ -10,7 +10,8 @@ extern NSUserDefaults *preference;
 extern ConversionEngine *engine;
 
 typedef NSInteger KeyCode;
-static const KeyCode KEY_RETURN = 36, KEY_SPACE = 49, KEY_DELETE = 51, KEY_ESC = 53, KEY_ARROW_DOWN = 125, KEY_ARROW_UP = 126, KEY_RIGHT_SHIFT = 60;
+static const KeyCode KEY_RETURN = 36, KEY_SPACE = 49, KEY_DELETE = 51, KEY_ESC = 53, KEY_ARROW_DOWN = 125, KEY_ARROW_UP = 126,
+                     KEY_RIGHT_SHIFT = 60;
 
 @interface InputController ()
 
@@ -30,47 +31,47 @@ static const KeyCode KEY_RETURN = 36, KEY_SPACE = 49, KEY_DELETE = 51, KEY_ESC =
     NSUInteger modifiers = event.modifierFlags;
     bool handled = NO;
     switch (event.type) {
-        case NSEventTypeFlagsChanged:
-            // NSLog(@"hallelujah event modifierFlags %lu, event keyCode: %@", (unsigned long)[event modifierFlags], [event keyCode]);
+    case NSEventTypeFlagsChanged:
+        // NSLog(@"hallelujah event modifierFlags %lu, event keyCode: %@", (unsigned long)[event modifierFlags], [event keyCode]);
 
-            if (_lastEventTypes[1] == NSEventTypeFlagsChanged && _lastModifiers[1] == modifiers) {
-                return YES;
-            }
+        if (_lastEventTypes[1] == NSEventTypeFlagsChanged && _lastModifiers[1] == modifiers) {
+            return YES;
+        }
 
-            if (modifiers == 0 && _lastEventTypes[1] == NSEventTypeFlagsChanged && _lastModifiers[1] == NSEventModifierFlagShift &&
-                    event.keyCode == KEY_RIGHT_SHIFT && !(_lastModifiers[0] & NSEventModifierFlagShift)) {
+        if (modifiers == 0 && _lastEventTypes[1] == NSEventTypeFlagsChanged && _lastModifiers[1] == NSEventModifierFlagShift &&
+            event.keyCode == KEY_RIGHT_SHIFT && !(_lastModifiers[0] & NSEventModifierFlagShift)) {
 
-                _defaultEnglishMode = !_defaultEnglishMode;
-                if (_defaultEnglishMode) {
-                    NSString *bufferedText = [self originalBuffer];
-                    if (bufferedText && bufferedText.length > 0) {
-                        [self cancelComposition];
-                        [self commitComposition:sender];
-                    }
+            _defaultEnglishMode = !_defaultEnglishMode;
+            if (_defaultEnglishMode) {
+                NSString *bufferedText = [self originalBuffer];
+                if (bufferedText && bufferedText.length > 0) {
+                    [self cancelComposition];
+                    [self commitComposition:sender];
                 }
             }
+        }
+        break;
+    case NSEventTypeKeyDown:
+        if (_defaultEnglishMode) {
             break;
-        case NSEventTypeKeyDown:
-            if (_defaultEnglishMode) {
-                break;
-            }
+        }
 
-            // ignore Command+X hotkeys.
-            if (modifiers & NSEventModifierFlagCommand)
-                break;
-
-            if (modifiers & NSEventModifierFlagOption) {
-                return false;
-            }
-
-            if (modifiers & NSEventModifierFlagControl) {
-                return false;
-            }
-
-            handled = [self onKeyEvent:event client:sender];
+        // ignore Command+X hotkeys.
+        if (modifiers & NSEventModifierFlagCommand)
             break;
-        default:
-            break;
+
+        if (modifiers & NSEventModifierFlagOption) {
+            return false;
+        }
+
+        if (modifiers & NSEventModifierFlagControl) {
+            return false;
+        }
+
+        handled = [self onKeyEvent:event client:sender];
+        break;
+    default:
+        break;
     }
 
     _lastModifiers[0] = _lastModifiers[1];
@@ -87,9 +88,9 @@ static const KeyCode KEY_RETURN = 36, KEY_SPACE = 49, KEY_DELETE = 51, KEY_ESC =
 
     NSString *bufferedText = [self originalBuffer];
     bool hasBufferedText = bufferedText && bufferedText.length > 0;
-//    if (hasBufferedText) {
-//        NSLog(@"hasBufferedText: %@", bufferedText);
-//    }
+    //    if (hasBufferedText) {
+    //        NSLog(@"hasBufferedText: %@", bufferedText);
+    //    }
 
     if (keyCode == KEY_DELETE) {
         if (hasBufferedText) {
@@ -123,13 +124,13 @@ static const KeyCode KEY_RETURN = 36, KEY_SPACE = 49, KEY_DELETE = 51, KEY_ESC =
     }
 
     char ch = [characters characterAtIndex:0];
-//    NSLog(@"first input char: %c, all characters: %@", ch, characters);
+    //    NSLog(@"first input char: %c, all characters: %@", ch, characters);
     if ((ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z')) {
         [self originalBufferAppend:characters client:sender];
 
-//        NSLog(@"sharedCandidates updateCandidates start");
+        //        NSLog(@"sharedCandidates updateCandidates start");
         [sharedCandidates updateCandidates];
-//        NSLog(@"sharedCandidates updateCandidates end");
+        //        NSLog(@"sharedCandidates updateCandidates end");
         [sharedCandidates show:kIMKLocateCandidatesBelowHint];
         return YES;
     }
@@ -165,7 +166,7 @@ static const KeyCode KEY_RETURN = 36, KEY_SPACE = 49, KEY_DELETE = 51, KEY_ESC =
                     candidate = _candidates[pressedNumber - 1];
                 } else {
                     candidate = _candidates[pageSize * (_currentCandidateIndex / pageSize - 1) + (_currentCandidateIndex % pageSize) +
-                            pressedNumber - 1];
+                                            pressedNumber - 1];
                 }
                 [self cancelComposition];
                 [self setComposedBuffer:candidate];
@@ -302,8 +303,8 @@ static const KeyCode KEY_RETURN = 36, KEY_SPACE = 49, KEY_DELETE = 51, KEY_ESC =
     NSString *originalBuff = [NSString stringWithString:[self originalBuffer]];
     if ([input.lowercaseString hasPrefix:originalBuff.lowercaseString]) {
         attrString = [[NSAttributedString alloc]
-                initWithString:[NSString stringWithFormat:@"%@%@", originalBuff, [input substringFromIndex:originalBuff.length]]
-                    attributes:attrs];
+            initWithString:[NSString stringWithFormat:@"%@%@", originalBuff, [input substringFromIndex:originalBuff.length]]
+                attributes:attrs];
     } else {
         attrString = [[NSAttributedString alloc] initWithString:input attributes:attrs];
     }
@@ -335,7 +336,7 @@ static const KeyCode KEY_RETURN = 36, KEY_SPACE = 49, KEY_DELETE = 51, KEY_ESC =
 - (void)candidateSelectionChanged:(NSAttributedString *)candidateString {
     [self _updateComposedBuffer:candidateString];
 
-//    [self showPreeditString:candidateString.string];
+    //    [self showPreeditString:candidateString.string];
 
     _insertionCounter = candidateString.length;
 
@@ -378,7 +379,7 @@ static const KeyCode KEY_RETURN = 36, KEY_SPACE = 49, KEY_DELETE = 51, KEY_ESC =
 }
 
 - (void)showIMEPreferences:(id)sender {
-//    [self openUrl:@"http://localhost:62718/index.html"];
+    //    [self openUrl:@"http://localhost:62718/index.html"];
 }
 
 - (void)clickAbout:(NSMenuItem *)sender {
@@ -392,11 +393,13 @@ static const KeyCode KEY_RETURN = 36, KEY_SPACE = 49, KEY_DELETE = 51, KEY_ESC =
     configuration.promptsUserIfNeeded = YES;
     configuration.createsNewApplicationInstance = NO;
 
-    [ws openURL:[NSURL URLWithString:url] configuration:configuration completionHandler:^(NSRunningApplication *_Nullable app, NSError *_Nullable error) {
-        if (error) {
-            NSLog(@"Failed to run the app: %@", error.localizedDescription);
-        }
-    }];
+    [ws openURL:[NSURL URLWithString:url]
+            configuration:configuration
+        completionHandler:^(NSRunningApplication *_Nullable app, NSError *_Nullable error) {
+            if (error) {
+                NSLog(@"Failed to run the app: %@", error.localizedDescription);
+            }
+        }];
 }
 
 - (void)showAnnotation:(NSAttributedString *)candidateString {
@@ -425,7 +428,7 @@ static const KeyCode KEY_RETURN = 36, KEY_SPACE = 49, KEY_DELETE = 51, KEY_ESC =
     NSScreen *currentScreen = [NSScreen currentScreenForMouseLocation];
     NSPoint currentPoint = [currentScreen convertPointToScreenCoordinates:cursorPoint];
     NSRect rect = currentScreen.frame;
-    int screenWidth = (int) rect.size.width;
+    int screenWidth = (int)rect.size.width;
     int marginToCandidateFrame = 20;
     int annotationWindowWidth = _annotationWin.width + marginToCandidateFrame;
     int lineHeight = lineRect.size.height; // 17px
