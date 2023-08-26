@@ -7,7 +7,7 @@
 @interface InputController : IMKInputController {
     NSMutableString *_composedBuffer;
     NSMutableString *_originalBuffer;
-    NSInteger _insertionIndex;
+    NSInteger _insertionCounter;
     NSInteger _currentCandidateIndex;
     NSMutableArray *_candidates;
     BOOL _defaultEnglishMode;

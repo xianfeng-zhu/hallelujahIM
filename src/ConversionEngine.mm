@@ -200,7 +200,9 @@ marisa::Trie trie;
             result = [NSMutableArray arrayWithArray:[result subarrayWithRange:NSMakeRange(0, 49)]];
         }
         [result removeObject:buffer];
-        [result insertObject:buffer atIndex:0];
+        if (result.count == 0) {
+            [result addObject:buffer];
+        }
     }
 
     NSMutableArray *result2 = [[NSMutableArray alloc] init];

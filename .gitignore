@@ -40,3 +40,4 @@ util/releases.json
 node_modules/
 *.dmg
 *.pkg
+Pods/Pods.xcodeproj/xcuserdata
